@@ -1,3 +1,4 @@
 [submodule "vendor/tabler"]
 	path = vendor/tabler
-	url = git@github.com:tabler/tabler.git
+	url = https://github.com/tabler/tabler.git
+
