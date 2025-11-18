@@ -21,6 +21,14 @@ export default function Sidebar() {
             </Link>
           </li>
           <li className="nav-item">
+            <Link href="/globe" className="nav-link">
+              <span className="nav-link-icon d-md-none d-lg-inline-block">
+                <IconFlask />
+              </span>
+              <span className="nav-link-title"> Globe </span>
+            </Link>
+          </li>
+          <li className="nav-item">
             <Link href="/statistics" className="nav-link">
               <span className="nav-link-icon d-md-none d-lg-inline-block">
                 <IconGlobe />
