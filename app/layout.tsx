@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.scss";
 import Sidebar from "./sidebar";
-import Card from "./shared/tabler/card";
-import { IconLinkPlus } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "LeoCommon Explorer",
