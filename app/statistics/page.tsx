@@ -4,7 +4,7 @@ import ReactEChartsCore from "echarts-for-react/lib/core";
 import * as echarts from "echarts/core";
 import Card from "../shared/tabler/card";
 
-import { BarChart } from "echarts/charts";
+import { BarChart, PieChart } from "echarts/charts";
 
 import {
   GridComponent,
@@ -19,6 +19,7 @@ echarts.use([
   TooltipComponent,
   GridComponent,
   BarChart,
+  PieChart,
   CanvasRenderer,
 ]);
 
