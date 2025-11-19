@@ -4,7 +4,7 @@ import ReactEChartsCore from "echarts-for-react/lib/core";
 import * as echarts from "echarts/core";
 import Card from "../shared/tabler/card";
 import globe from "../../public/geo-data/world.geo.json"
-import { BarChart, PieChart} from "echarts/charts";
+import { BarChart, PieChart, ScatterChart } from "echarts/charts";
 
 import {
     GridComponent,
@@ -21,6 +21,7 @@ echarts.use([
     GridComponent,
     BarChart,
     PieChart,
+    ScatterChart,
     CanvasRenderer,
     GeoComponent
 ]);
@@ -37,6 +38,28 @@ const sensormap_option = {
             textBorderWidth: 2
         }
     },
+    series: [
+        {
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            geoIndex: 0,
+            encode: {
+                // `2` is the dimension index of series.data
+                tooltip: 2,
+                label: 2
+            },
+            data: [
+                // Longitude, latitude, status as string
+                // Dummy point, input real data and check if active or not
+                [6.914567708276425, 46.83996545054292, "active"]
+            ],
+            itemStyle: {
+                color: '#00ff00',
+                borderWidth: 1,
+                borderColor: '#00ff00'
+            }
+        },
+    ],
     tooltip: {},
 };
 export default function Test() {
@@ -85,7 +108,7 @@ export default function Test() {
                                         notMerge={true}
                                         lazyUpdate={true}
                                         theme={"theme_name"}
-                                        style={{height:'500px'}}
+                                        style={{ height: '500px' }}
                                     />
                                 </div>
                             </div>
