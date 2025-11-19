@@ -1,7 +1,88 @@
+'use client'
 import { IconPlus, IconSatellite } from "@tabler/icons-react";
 import Card from "../shared/tabler/card";
+import React from 'react';
+import ReactEChartsCore from 'echarts-for-react/lib/core';
+import * as echarts from 'echarts/core';
+
+import {
+  BarChart
+} from 'echarts/charts';
+
+import {
+  GridComponent,
+  TooltipComponent,
+  TitleComponent,
+  DatasetComponent
+} from 'echarts/components';
+
+import {
+  CanvasRenderer,
+} from 'echarts/renderers';
+
+echarts.use(
+  [TitleComponent, TooltipComponent, GridComponent, BarChart, CanvasRenderer]
+);
 
 export default function Statistics() {
+
+  const barchart_option = {
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        data: [120, 200, 150, 80, 70, 110, 130],
+        type: 'bar'
+      }
+    ]
+  };
+
+  const piechart_option = {
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      top: '5%',
+      left: 'center'
+    },
+    series: [
+      {
+        name: 'Number of Satellites',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 2
+        },
+        label: {
+          show: false
+        },
+        emphasis: {
+          label: {
+            show: false,
+            fontSize: 40
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: [
+          { value: 1048, name: 'Iridium' },
+          { value: 735, name: 'Orbcomm' },
+          { value: 580, name: 'Globalstar' },
+          { value: 484, name: 'Starlink' }
+        ]
+      }
+    ]
+  };
+
   return (
     <div className="page-wrapper">
       <div className="page-header d-print-none" aria-label="Page header">
@@ -64,6 +145,36 @@ export default function Statistics() {
                 content="21'131"
                 icon={<IconSatellite></IconSatellite>}
               />
+            </div>
+            <div className="row">
+              <div className="col-lg-3">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="subheader">cool barchart</div>
+                    <ReactEChartsCore
+                      echarts={echarts}
+                      option={barchart_option}
+                      notMerge={true}
+                      lazyUpdate={true}
+                      theme={"theme_name"}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-3">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="subheader">cool barchart</div>
+                    <ReactEChartsCore
+                      echarts={echarts}
+                      option={piechart_option}
+                      notMerge={true}
+                      lazyUpdate={true}
+                      theme={"theme_name"}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
