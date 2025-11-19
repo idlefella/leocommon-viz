@@ -6,7 +6,7 @@ import * as echarts from "echarts/core";
 import { useEffect, useState } from "react";
 import Service from "../shared/service";
 
-import { PieChart } from "echarts/charts";
+import { BarChart, PieChart, LineChart } from "echarts/charts";
 
 import {
   GridComponent,
@@ -16,12 +16,15 @@ import {
 } from "echarts/components";
 
 import { CanvasRenderer } from "echarts/renderers";
+import { createHistogram, aggregateData } from "../shared/utils";
 
 echarts.use([
   TitleComponent,
   TooltipComponent,
   GridComponent,
+  BarChart,
   PieChart,
+  LineChart,
   CanvasRenderer,
   LegendComponent,
 ]);
@@ -31,7 +34,11 @@ export default function Job() {
   const [job, setJob] = useState("");
   const [jobData, setJobData] = useState(null);
   const [jobIridiumIra, setJobIridiumIra] = useState(null);
-  const [chartData, setChartData] = useState({});
+  const [frameTypePieChartData, setFrameTypePieChartData] = useState({});
+  const [frameTypeBarChartData, setFrameTypeBarChartData] = useState({});
+  const [snrDistrubtionData, setSnrDistributionData] = useState({});
+  const [packetsOverTimeData, setPacketsOverTimeData] = useState({});
+  const [snrOverTimeData, setSnrOverTimeData] = useState({});
 
   useEffect(() => {
     Service.getDatasets().then((response) => {
@@ -40,6 +47,13 @@ export default function Job() {
   }, []);
 
   useEffect(() => {
+    setJobIridiumIra(null);
+    setFrameTypePieChartData(null);
+    setFrameTypeBarChartData(null);
+    setSnrDistributionData(null);
+    setPacketsOverTimeData(null);
+    setJobData(null);
+    setSnrOverTimeData(null)
     if (job) {
       Service.getDfInfo(job).then((response) => {
         setJobData(response);
@@ -54,18 +68,31 @@ export default function Job() {
             }
             return acc;
           }, {})
+        ).sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
+          } else if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
+        updateFrameTypePieChart(data);
+        updateFrameTypeBarChart(data);
+        updatePacketsOverTimeData(response);
+        updateSnrOverTimeChart(response)
+        
+
+        const snrDistribution = createHistogram(
+          response.map((data) => data.snr),
+          20
         );
-        updateChartData(data);
+        updateSnrDistributionChart(snrDistribution);
       });
     }
   }, [job]);
 
-  const updateChartData = (data) => {
-    setChartData({
-      title: {
-        text: "Frame types",
-        left: "center",
-      },
+  const updateFrameTypePieChart = (data) => {
+    setFrameTypePieChartData({
       tooltip: {
         trigger: "item",
       },
@@ -79,13 +106,139 @@ export default function Job() {
           type: "pie",
           radius: "50%",
           data: data,
-          // emphasis: {
-          //   itemStyle: {
-          //     shadowBlur: 10,
-          //     shadowOffsetX: 0,
-          //     shadowColor: "rgba(0, 0, 0, 0.5)",
-          //   },
-          // },
+        },
+      ],
+    });
+  };
+
+  const updateFrameTypeBarChart = (data) => {
+    setFrameTypeBarChartData({
+      tooltip: {
+        trigger: "item",
+      },
+      xAxis: {
+        type: "category",
+        data: data.map((item) => item["name"]),
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          data: data.map((item) => item["value"]),
+          type: "bar",
+        },
+      ],
+    });
+  };
+
+  const updateSnrDistributionChart = (data) => {
+    setSnrDistributionData({
+      tooltip: {
+        trigger: "item",
+      },
+      xAxis: {
+        type: "category",
+        data: data.buckets.map((item) => `${item[0]} - ${item[1]}`),
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          data: data.counts,
+          type: "bar",
+        },
+      ],
+    });
+  };
+
+  const updateSnrOverTimeChart = (data) => {
+
+    const aggregatedData = aggregateData(data, 60)
+
+    setSnrOverTimeData({
+      tooltip: {
+        trigger: "item",
+      },
+      xAxis: {
+        type: "time",
+      },
+      yAxis: {
+        type: "value",
+      },
+      legend: {
+        orient: "vertical",
+        left: "left",
+      },
+      series: [
+        {
+          name: "min",
+          data: aggregatedData.map(element => [element.time, element.snr_min]),
+          type: "line",
+        },
+        {
+          name: "avg",
+          data: aggregatedData.map(element => [element.time, element.snr_avg]),
+          type: "line",
+        },
+        {
+          name: "max",
+          data: aggregatedData.map(element => [element.time, element.snr_max]),
+          type: "line",
+        },
+      ],
+    })
+  }
+
+  const updatePacketsOverTimeData = (data) => {
+    // Convert to Date objects and round to the nearest minute
+    data.forEach((item) => {
+      item.minute = new Date(Math.floor(item.time * 1000));
+      item.minute.setSeconds(0, 0);
+    });
+
+    // Aggregate items by minute
+    const aggregated = data.reduce((acc, curr, index) => {
+      const minuteKey = curr.minute.getTime();
+
+      if (!acc[minuteKey]) {
+        acc[minuteKey] = { time: minuteKey / 1000, value: 0 };
+      }
+      acc[minuteKey].value += index + 1;
+
+      return acc;
+    }, {});
+
+    // Convert the aggregated object back to an array
+    const packetsOverTime = Object.values(aggregated);
+
+    // Accumulate data
+    let accumulated = [];
+    let total = 0;
+
+    packetsOverTime.forEach((item) => {
+      total += item.value;
+      accumulated.push({
+        time: item.time,
+        value: total,
+      });
+    });
+
+    setPacketsOverTimeData({
+      tooltip: {
+        trigger: "item",
+      },
+      xAxis: {
+        type: "time",
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          data: accumulated.map((item) => [new Date(item.time), item.value]),
+          type: "line",
         },
       ],
     });
@@ -151,59 +304,136 @@ export default function Job() {
               </form>
             </div>
           </div>
-          {jobData && (
-            <div className="row row-cards mt-3">
-              <div className="col">
-                <div className="card">
-                  <div className="card-header">
-                    <h3 className="card-title">Example data</h3>
-                  </div>
-                  <div className="card-body">
-                    <div className="table-responsive">
-                      <table className="table table-vcenter">
-                        <thead>
-                          <tr key="tr1">
-                            {jobData.columns.map((value, index) => (
-                              <th key={index}>{value}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {jobData.head.map((value, index) => (
-                            <tr key={index}>
-                              {jobData.columns.map((value, index) => (
-                                <td key={index}>
-                                  {jobData.head[index][value]}
-                                </td>
+          {job && (
+            <>
+              <div className="row row-cards mt-3">
+                <div className="col">
+                  <div className="card">
+                    <div className="card-header">
+                      <h3 className="card-title">Example data</h3>
+                    </div>
+                    <div className="card-body">
+                      {jobData ? (
+                        <div className="table-responsive">
+                          <table className="table table-condensed table-vcenter">
+                            <thead>
+                              <tr key="tr1">
+                                {jobData.columns.map((value, index) => (
+                                  <th key={index}>{value}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {jobData.head.map((value, index) => (
+                                <tr key={index}>
+                                  {jobData.columns.map((value, index) => (
+                                    <td key={index}>
+                                      {jobData.head[index][value]}
+                                    </td>
+                                  ))}
+                                </tr>
                               ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="loader"></div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col">
-                <div className="card">
-                  <div className="card-header">Message type</div>
-                  <div className="card-body">
-                    {chartData && (
-                      <ReactEChartsCore
-                        echarts={echarts}
-                        option={chartData}
-                        //notMerge={true}
-                        //lazyUpdate={true}
-                        //theme={"theme_name"}
-                        //onChartReady={this.onChartReadyCallback}
-                        //onEvents={EventsDict}
-                        //opts={}
-                      />
-                    )}
+
+              <div className="row row-cards mt-3">
+                <div className="col">
+                  <div className="card">
+                    <div className="card-header">
+                      <h3 className="card-title">Frame types</h3>
+                    </div>
+                    <div className="card-body">
+                      {frameTypePieChartData ? (
+                        <ReactEChartsCore
+                          echarts={echarts}
+                          option={frameTypePieChartData}
+                        />
+                      ) : (
+                        <div className="loader"></div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col">
+                  <div className="card">
+                    <div className="card-header">Frame types</div>
+                    <div className="card-body">
+                      {frameTypeBarChartData ? (
+                        <ReactEChartsCore
+                          echarts={echarts}
+                          option={frameTypeBarChartData}
+                        />
+                      ) : (
+                        <div className="loader"></div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <div className="row mt-3">
+                <div className="col-6">
+                  <div className="card">
+                    <div className="card-header">
+                      <h3 className="card-title">SNR distribution</h3>
+                    </div>
+                    <div className="card-body">
+                      {snrDistrubtionData ? (
+                        <ReactEChartsCore
+                          echarts={echarts}
+                          option={snrDistrubtionData}
+                        />
+                      ) : (
+                        <div className="loader"></div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="card">
+                    <div className="card-header">
+                      <h3 className="card-title">Packets over time</h3>
+                    </div>
+                    <div className="card-body">
+                      {packetsOverTimeData ? (
+                        <ReactEChartsCore
+                          echarts={echarts}
+                          option={packetsOverTimeData}
+                        />
+                      ) : (
+                        <div className="loader"></div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-6">
+                  <div className="card">
+                    <div className="card-header">
+                      <h3 className="card-title">SNR over time</h3>
+                    </div>
+                    <div className="card-body">
+                      {snrOverTimeData ? (
+                        <ReactEChartsCore
+                          echarts={echarts}
+                          option={snrOverTimeData}
+                        />
+                      ) : (
+                        <div className="loader"></div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>
