@@ -20,6 +20,24 @@ const assignCategory = (satelliteId: string) => {
   }
 };
 
+const assignColor = (satelliteId: string) => {
+  if (!satelliteId) {
+    return [1.0, 1.0, 1.0];
+  } else if (satelliteId.includes("IRIDIUM")) {
+    return [0.878, 0.051, 0.133]; // red #e00d22
+  } else if (satelliteId.includes("STARLINK")) {
+    return [0.051, 0.431, 0.992]; // blue #0d6efd
+  } else if (satelliteId.includes("ORBCOMM")) {
+    return [0.051, 0.792, 0.941] // cyan #0dcaf0
+  } else if (satelliteId.includes("ONEWEB")) {
+    return [0.992, 0.494, 0.078] // orange #fd7e14
+  } else if (satelliteId.includes("GLOBALSTAR")) {
+    return [0.098, 0.529, 0.329] // green #198754
+  } else {
+    return [0.4, 0.4, 0.4]; // grey #666666
+  }
+};
+
 export default {
   getTLEs: (system: string) => {
     const params = new URLSearchParams();
@@ -35,7 +53,7 @@ export default {
           return {
             name: item.name,
             satelliteId: item.satelliteId,
-            color: [0.7, 0.7, 1],
+            color: assignColor(item.name),
             category: assignCategory(item.name),
             satrec: twoline2satrec(item.line1, item.line2),
           };

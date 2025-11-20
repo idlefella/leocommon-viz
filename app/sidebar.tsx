@@ -46,6 +46,7 @@ export default function Sidebar() {
           </li>
         </ul>
       </div>
+      <img src="/coreb.png" style={{'backgroundColor': "#ffffff", 'marginBottom': '80px', 'marginLeft': '6px'}} />
     </div>
   );
 }

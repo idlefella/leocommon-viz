@@ -76,6 +76,23 @@ export default function Globe() {
           </div>
           <div className="row mt-3">
             <div className="col">
+              <div className="card">
+                <div className="card-body">
+                  <h3 className="card-title">Legend</h3>
+                  <div className="badges-list">
+                    <span className="badge bg-red text-red-fg">Iridum</span>
+                    <span className="badge bg-blue text-blue-fg">Starlink</span>
+                    <span className="badge bg-cyan text-cyan-fg">Orbcomm</span>
+                    <span className="badge bg-orange text-orange-fg">Oneweb</span>
+                    <span className="badge bg-green text-green-fg">Globalstar</span>
+                    <span className="badge bg-grey text-grey-fg">Other</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row mt-3">
+            <div className="col">
               <div className="card p-0">
                 <div className="card-body p-0 ">
                   <Visualization

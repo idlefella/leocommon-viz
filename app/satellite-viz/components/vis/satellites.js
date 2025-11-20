@@ -68,7 +68,8 @@ const updateBuffer = (gl, data, ref) => {
         // buffer new color values from data
         const colors = new Float32Array(data.length * 3 * 2)
         data.forEach((item, i) => {
-            const categoryColor = categoryColors[item.category]
+            //const categoryColor = categoryColors[item.category]
+            const categoryColor = item.color
             colors.set(categoryColor, i * 3 * 2)
             const selectColor = hexToByte(selectColors[i]).map(byte => byte / 255)
             colors.set(selectColor, 3 + i * 3 * 2)
