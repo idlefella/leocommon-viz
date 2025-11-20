@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.scss";
-import Sidebar from "./sidebar";
+import { Sidebar } from "./sidebar";
 
 export const metadata: Metadata = {
   title: "LeoCommon Explorer",
@@ -28,9 +28,9 @@ export default function RootLayout({
             className="navbar navbar-vertical navbar-expand-lg"
             data-bs-theme="dark"
           >
-            {Sidebar()}
+            <Sidebar />
           </aside>
-          {children}
+          <div className="page-wrapper">{children}</div>
         </div>
       </body>
     </html>

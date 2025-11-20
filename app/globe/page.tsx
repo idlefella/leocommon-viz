@@ -6,6 +6,7 @@ import Visualization from "../satellite-viz/components/visualization";
 import { newEpoch } from "../satellite-viz/lib/shared-epoch.js";
 
 import Service from "../shared/service";
+import { Card2 } from "../shared/tabler/card";
 
 export default function Globe() {
   const [satData, setSatData] = useState([]);
@@ -47,31 +48,23 @@ export default function Globe() {
         <div className="container-xl">
           <div className="row row-cards">
             <div className="col">
-              <div className="card">
-                <div className="card-header">
-                  <h3 className="card-title">Filter satellites</h3>
-                </div>
-                <div className="card-body">
-                  <h3 className="card-title">Satellite system</h3>
-                  <p className="card-subtitle">
-                    Select the satellite system to show.
-                  </p>
-                  <select
-                    className="form-select"
-                    onChange={(event) =>
-                      setStatelliteSystem(event.target.value)
-                    }
-                  >
-                    <option>all</option>
-                    <option>iridium</option>
-                    <option>starlink</option>
-                    <option>orbcomm</option>
-                    <option>oneweb</option>
-                    <option>globalstar</option>
-                    <option>other</option>
-                  </select>
-                </div>
-              </div>
+              <Card2 title="Filter satellites">
+                <p className="card-subtitle">
+                  Select the satellite system to show.
+                </p>
+                <select
+                  className="form-select"
+                  onChange={(event) => setStatelliteSystem(event.target.value)}
+                >
+                  <option>all</option>
+                  <option>iridium</option>
+                  <option>starlink</option>
+                  <option>orbcomm</option>
+                  <option>oneweb</option>
+                  <option>globalstar</option>
+                  <option>other</option>
+                </select>
+              </Card2>
             </div>
           </div>
           <div className="row mt-3">
@@ -83,8 +76,12 @@ export default function Globe() {
                     <span className="badge bg-red text-red-fg">Iridum</span>
                     <span className="badge bg-blue text-blue-fg">Starlink</span>
                     <span className="badge bg-cyan text-cyan-fg">Orbcomm</span>
-                    <span className="badge bg-orange text-orange-fg">Oneweb</span>
-                    <span className="badge bg-green text-green-fg">Globalstar</span>
+                    <span className="badge bg-orange text-orange-fg">
+                      Oneweb
+                    </span>
+                    <span className="badge bg-green text-green-fg">
+                      Globalstar
+                    </span>
                     <span className="badge bg-grey text-grey-fg">Other</span>
                   </div>
                 </div>

@@ -1,24 +1,13 @@
-import {
-  IconPlus,
-  IconRocket,
-  IconSatellite
-} from "@tabler/icons-react";
+import { IconRocket, IconSatellite } from "@tabler/icons-react";
 import Link from "next/link";
+import Body from "./shared/tabler/body";
+import Header from "./shared/tabler/header";
 
 export default function Home() {
   return (
-    <div className="page-wrapper">
-      <div className="page-header d-print-none" aria-label="Page header">
-        <div className="container-xl">
-          <div className="row g-2 align-items-center">
-            <div className="col">
-              <div className="page-pretitle">LeoCommon Explorer</div>
-              <h2 className="page-title">Home</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="page-body">
+    <>
+      <Header title="Home" pretitle="LeoCommon Explorer" />
+      <Body>
         <div className="container-xl">
           <div className="row row-deck row-cards">
             <div className="card card-md sticky-top">
@@ -45,7 +34,7 @@ export default function Home() {
                       Ipsum.
                     </div>
                     <div className="mt-3">
-                      <Link href="/statistics" className="btn btn-primary">
+                      <Link href="/globe" className="btn btn-primary">
                         <IconRocket />
                         &nbsp; Get started
                       </Link>
@@ -56,7 +45,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </Body>
+    </>
   );
 }

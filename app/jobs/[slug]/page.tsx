@@ -18,6 +18,8 @@ import {
 
 import { CanvasRenderer } from "echarts/renderers";
 import { redirect } from "next/navigation";
+import Header from "@/app/shared/tabler/header";
+import { Card2 } from "@/app/shared/tabler/card";
 
 echarts.use([
   TitleComponent,
@@ -41,6 +43,12 @@ export default function Page({
     });
   });
 
+  useEffect(() => {
+    Service.getDatasets().then((response) => {
+      setJobs(response);
+    });
+  }, []);
+
   const [jobs, setJobs] = useState([]);
   const [job, setJob] = useState("");
   const [jobData, setJobData] = useState(null);
@@ -54,12 +62,6 @@ export default function Page({
   const onJobSelected = (jobName: string) => {
     redirect(`/jobs/${jobName}`);
   };
-
-  useEffect(() => {
-    Service.getDatasets().then((response) => {
-      setJobs(response);
-    });
-  }, []);
 
   useEffect(() => {
     setJobIridiumIra(null);
@@ -268,199 +270,154 @@ export default function Page({
 
   return (
     <div>
-      <div className="page-header d-print-none" aria-label="Page header">
-        <div className="container-xl">
-          <div className="row g-2 align-items-center">
-            <div className="col">
-              <div className="page-pretitle">LeoCommon Explorer</div>
-              <h2 className="page-title">Jobs</h2>
-            </div>
-            <div className="col-auto ms-auto d-print-none">
-              <div className="btn-list">
-                <a
-                  href="#"
-                  className="btn btn-primary btn-5 d-none d-sm-inline-block"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal-report"
-                >
-                  <IconLinkPlus />
-                  Create new measurement
-                </a>
-                <a
-                  href="#"
-                  className="btn btn-primary btn-6 d-sm-none btn-icon"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal-report"
-                  aria-label="Create new report"
-                ></a>
-              </div>
-            </div>
+      <Header title="Jobs" pretitle="LeoCommon Explorer">
+        <div className="col-auto ms-auto d-print-none">
+          <div className="btn-list">
+            <a
+              href="#"
+              className="btn btn-primary btn-5 d-none d-sm-inline-block"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-report"
+            >
+              <IconLinkPlus />
+              Create new measurement
+            </a>
+            <a
+              href="#"
+              className="btn btn-primary btn-6 d-sm-none btn-icon"
+              data-bs-toggle="modal"
+              data-bs-target="#modal-report"
+              aria-label="Create new report"
+            ></a>
           </div>
         </div>
-      </div>
+      </Header>
       <div className="page-body">
         <div className="container-xl">
           <div className="row row-cards">
             <div className="col">
-              <form action="#" className="card">
-                <div className="card-header">
-                  <h4 className="card-title">Select Job</h4>
-                </div>
-                <div className="card-body">
-                  <div className="row">
-                    <div className="col">
-                      {job && (
-                        <>
-                          <label htmlFor="job">Job</label>
-                          <select
-                            className="form-select"
-                            onChange={(event) =>
-                              onJobSelected(event.target.value)
-                            }
-                            defaultValue={job}
-                            id="jobName"
-                          >
-                            {jobs.map((value, index) => (
-                              <option value={value} key={value}>
-                                {value}
-                              </option>
-                            ))}
-                          </select>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </form>
+              <Card2 title="Select Job">
+                <form action="#">
+                  {job && (
+                    <>
+                      <label htmlFor="job">Job</label>
+                      <select
+                        className="form-select"
+                        onChange={(event) => onJobSelected(event.target.value)}
+                        value={job}
+                        id="jobName"
+                      >
+                        {jobs.map((value, index) => (
+                          <option value={value} key={value}>
+                            {value}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  )}
+                </form>
+              </Card2>
             </div>
           </div>
           {job && (
             <>
               <div className="row row-cards mt-3">
                 <div className="col">
-                  <div className="card">
-                    <div className="card-header">
-                      <h3 className="card-title">Example data</h3>
-                    </div>
-                    <div className="card-body">
-                      {jobData ? (
-                        <div className="table-responsive">
-                          <table className="table table-condensed table-vcenter">
-                            <thead>
-                              <tr key="tr1">
+                  <Card2 title="Example data">
+                    {jobData ? (
+                      <div className="table-responsive">
+                        <table className="table table-vcenter">
+                          <thead>
+                            <tr key="tr1">
+                              {jobData.columns.map((value, index) => (
+                                <th key={index}>{value}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {jobData.head.map((value, index) => (
+                              <tr key={index}>
                                 {jobData.columns.map((value, index) => (
-                                  <th key={index}>{value}</th>
+                                  <td key={index}>
+                                    {jobData.head[index][value]}
+                                  </td>
                                 ))}
                               </tr>
-                            </thead>
-                            <tbody>
-                              {jobData.head.map((value, index) => (
-                                <tr key={index}>
-                                  {jobData.columns.map((value, index) => (
-                                    <td key={index}>
-                                      {jobData.head[index][value]}
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      ) : (
-                        <div className="loader"></div>
-                      )}
-                    </div>
-                  </div>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="loader"></div>
+                    )}
+                  </Card2>
                 </div>
               </div>
 
               <div className="row row-cards mt-3">
                 <div className="col">
-                  <div className="card">
-                    <div className="card-header">
-                      <h3 className="card-title">Frame types</h3>
-                    </div>
-                    <div className="card-body">
-                      {frameTypePieChartData ? (
-                        <ReactEChartsCore
-                          echarts={echarts}
-                          option={frameTypePieChartData}
-                        />
-                      ) : (
-                        <div className="loader"></div>
-                      )}
-                    </div>
-                  </div>
+                  <Card2 title="Frame types">
+                    {frameTypePieChartData ? (
+                      <ReactEChartsCore
+                        echarts={echarts}
+                        option={frameTypePieChartData}
+                      />
+                    ) : (
+                      <div className="loader"></div>
+                    )}
+                  </Card2>
                 </div>
                 <div className="col">
-                  <div className="card">
-                    <div className="card-header">Frame types</div>
-                    <div className="card-body">
-                      {frameTypeBarChartData ? (
-                        <ReactEChartsCore
-                          echarts={echarts}
-                          option={frameTypeBarChartData}
-                        />
-                      ) : (
-                        <div className="loader"></div>
-                      )}
-                    </div>
-                  </div>
+                  <Card2 title="Frame types">
+                    {frameTypeBarChartData ? (
+                      <ReactEChartsCore
+                        echarts={echarts}
+                        option={frameTypeBarChartData}
+                      />
+                    ) : (
+                      <div className="loader"></div>
+                    )}
+                  </Card2>
                 </div>
               </div>
               <div className="row mt-3">
                 <div className="col-6">
-                  <div className="card">
-                    <div className="card-header">
-                      <h3 className="card-title">SNR distribution</h3>
-                    </div>
-                    <div className="card-body">
-                      {snrDistrubtionData ? (
-                        <ReactEChartsCore
-                          echarts={echarts}
-                          option={snrDistrubtionData}
-                        />
-                      ) : (
-                        <div className="loader"></div>
-                      )}
-                    </div>
-                  </div>
+                  <Card2 title="SNR distribution">
+                    {snrDistrubtionData ? (
+                      <ReactEChartsCore
+                        echarts={echarts}
+                        option={snrDistrubtionData}
+                      />
+                    ) : (
+                      <div className="loader"></div>
+                    )}
+                  </Card2>
                 </div>
                 <div className="col-6">
-                  <div className="card">
-                    <div className="card-header">
-                      <h3 className="card-title">Packets over time</h3>
-                    </div>
-                    <div className="card-body">
-                      {packetsOverTimeData ? (
-                        <ReactEChartsCore
-                          echarts={echarts}
-                          option={packetsOverTimeData}
-                        />
-                      ) : (
-                        <div className="loader"></div>
-                      )}
-                    </div>
-                  </div>
+                  <Card2 title="Packets over time">
+                    {packetsOverTimeData ? (
+                      <ReactEChartsCore
+                        echarts={echarts}
+                        option={packetsOverTimeData}
+                      />
+                    ) : (
+                      <div className="loader"></div>
+                    )}
+                  </Card2>
                 </div>
               </div>
               <div className="row mt-3">
                 <div className="col-6">
-                  <div className="card">
-                    <div className="card-header">
-                      <h3 className="card-title">SNR over time</h3>
-                    </div>
-                    <div className="card-body">
-                      {snrOverTimeData ? (
-                        <ReactEChartsCore
-                          echarts={echarts}
-                          option={snrOverTimeData}
-                        />
-                      ) : (
-                        <div className="loader"></div>
-                      )}
-                    </div>
-                  </div>
+                  <Card2 title="SNR over time">
+                    {snrOverTimeData ? (
+                      <ReactEChartsCore
+                        echarts={echarts}
+                        option={snrOverTimeData}
+                      />
+                    ) : (
+                      <div className="loader"></div>
+                    )}
+                  </Card2>
                 </div>
               </div>
             </>
