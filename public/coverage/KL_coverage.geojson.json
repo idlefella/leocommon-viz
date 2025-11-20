@@ -1,0 +1,105 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "sensor_name": "Sensor_KL_01",
+        "data_points": 26228,
+        "description": "Coverage area for Sensor_KL_01 based on satellite positions (sat_alt > 100km, invalid coordinates filtered)",
+        "statistics": {
+          "data_points": 26228,
+          "original_data_points": 26299,
+          "filtered_out": 71,
+          "filter_percentage": 0.2699722422905814,
+          "lat_range": [
+            28.52,
+            71.91
+          ],
+          "lon_range": [
+            -26.02,
+            37.04
+          ],
+          "center_lat": 49.74260904377014,
+          "center_lon": -0.9597201464084155
+        },
+        "filtering_info": "Removed coordinates at (0,0), lat=0, lon=0, and other invalid positions"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -26.02,
+              47.08
+            ],
+            [
+              -13.8,
+              67.22
+            ],
+            [
+              -8.25,
+              69.44
+            ],
+            [
+              8.19,
+              71.91
+            ],
+            [
+              19.87,
+              67.14
+            ],
+            [
+              27.38,
+              63.78
+            ],
+            [
+              36.96,
+              45.91
+            ],
+            [
+              37.04,
+              44.87
+            ],
+            [
+              34.82,
+              41.81
+            ],
+            [
+              23.7,
+              31.67
+            ],
+            [
+              16.81,
+              29.77
+            ],
+            [
+              7.5,
+              28.52
+            ],
+            [
+              -3.89,
+              30.04
+            ],
+            [
+              -8.61,
+              31.15
+            ],
+            [
+              -15.93,
+              34.2
+            ],
+            [
+              -23.28,
+              41.65
+            ],
+            [
+              -26.02,
+              47.08
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

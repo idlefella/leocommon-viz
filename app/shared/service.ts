@@ -28,40 +28,45 @@ const assignColor = (satelliteId: string) => {
   } else if (satelliteId.includes("STARLINK")) {
     return [0.051, 0.431, 0.992]; // blue #0d6efd
   } else if (satelliteId.includes("ORBCOMM")) {
-    return [0.051, 0.792, 0.941] // cyan #0dcaf0
+    return [0.051, 0.792, 0.941]; // cyan #0dcaf0
   } else if (satelliteId.includes("ONEWEB")) {
-    return [0.992, 0.494, 0.078] // orange #fd7e14
+    return [0.992, 0.494, 0.078]; // orange #fd7e14
   } else if (satelliteId.includes("GLOBALSTAR")) {
-    return [0.098, 0.529, 0.329] // green #198754
+    return [0.098, 0.529, 0.329]; // green #198754
   } else {
     return [0.4, 0.4, 0.4]; // grey #666666
   }
 };
 
 export interface Client {
-  sensor_name: string
-  jobs: any[]
-  status_status_time: number
-  status_location_lat: number
-  status_location_lon: number
-  status_os_version: string
-  status_temperature_celsius: number
-  status_LTE: string
-  status_WiFi: string
-  status_Ethernet: string
+  sensor_name: string;
+  jobs: any[];
+  status_status_time: number;
+  status_location_lat: number;
+  status_location_lon: number;
+  status_os_version: string;
+  status_temperature_celsius: number;
+  status_LTE: string;
+  status_WiFi: string;
+  status_Ethernet: string;
 }
 
 export interface PacketWithTime {
-  year: number,
-  month: number,
-  count: number,
-  year_month: string
+  year: number;
+  month: number;
+  count: number;
+  year_month: string;
 }
 
 export interface JobCountWithTime {
-  year: number,
-  month: number,
-  unique_job_count: number,
+  year: number;
+  month: number;
+  unique_job_count: number;
+}
+
+export interface FrameStat {
+  frame_type: string
+  count: number
 }
 
 export const Service = {
@@ -106,40 +111,30 @@ export const Service = {
       return response.json();
     });
   },
-<<<<<<< Updated upstream
   getClients: () => {
     return fetch(`${BASE_URL}/clients`).then((response) => {
       return response.json() as Promise<Client[]>;
     });
   },
   getNetworkPacketsOverTime: () => {
-    return fetch(`${BASE_URL}/network_stats_packets_over_time`).then((response) => {
-      return response.json() as Promise<PacketWithTime[]>;
-    });
+    return fetch(`${BASE_URL}/network_stats_packets_over_time`).then(
+      (response) => {
+        return response.json() as Promise<PacketWithTime[]>;
+      }
+    );
   },
   getNumberOfJobsOverTime: () => {
-    return fetch(`${BASE_URL}/network_stats_number_of_jobs_per_month`).then((response) => {
-      return response.json() as Promise<JobCountWithTime[]>;
-=======
-  getClients: (dataset: string) => {
-    return fetch(`${BASE_URL}/clients`).then((response) => {
-      return response.json();
-    });
+    return fetch(`${BASE_URL}/network_stats_number_of_jobs_per_month`).then(
+      (response) => {
+        return response.json() as Promise<JobCountWithTime[]>;
+      }
+    );
   },
-  getNumberOfJobsPerMonth: (dataset:string) => {
-    return fetch(`${BASE_URL}/network_stats_number_of_jobs_per_month`).then((response) => {
-      return response.json();
-    });
-  },
-  getPacketsOverTime: (dataset:string) => {
-    return fetch(`${BASE_URL}/network_stats_packets_over_time`).then((response) => {
-      return response.json();
-    });
-  },
-  getNumberOfPackets: (dataset:string) => {
-    return fetch(`${BASE_URL}/network_stats_number_of_packets`).then((response) => {
-      return response.json();
->>>>>>> Stashed changes
-    });
+  getNumberOfPackets: () => {
+    return fetch(`${BASE_URL}/network_stats_number_of_packets`).then(
+      (response) => {
+        return response.json() as Promise<FrameStat[]>;
+      }
+    );
   },
 };

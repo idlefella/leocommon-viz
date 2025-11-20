@@ -1,11 +1,12 @@
 "use client";
-import { IconPlus } from "@tabler/icons-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
-import { BarChart, PieChart, ScatterChart } from "echarts/charts";
+import { BarChart, PieChart, ScatterChart, MapChart } from "echarts/charts";
 import * as echarts from "echarts/core";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import globe from "../../../public/geo-data/world.geo.json";
-import { Client, Service } from "../../shared/service";
+import { Client } from "../../shared/service";
+
+import kaiserLauternGeoJson from "../../../public/coverage/KL_coverage.geojson.json";
 
 // import data from "./data";
 
@@ -16,9 +17,9 @@ import {
   TooltipComponent,
 } from "echarts/components";
 
+import { EChartsOption } from "echarts";
 import EChartsReactCore from "echarts-for-react/lib/core";
 import { CanvasRenderer } from "echarts/renderers";
-import { EChartsOption } from "echarts";
 
 echarts.use([
   TitleComponent,
@@ -29,9 +30,12 @@ echarts.use([
   ScatterChart,
   CanvasRenderer,
   GeoComponent,
+  MapChart
 ]);
 
 echarts.registerMap("world", JSON.stringify(globe));
+// TODO
+//echarts.registerMap("Kaiserlautern", JSON.stringify(kaiserLauternGeoJson));
 
 interface IEchartsGeoMapSensors {
   clients: Client[];
@@ -140,56 +144,63 @@ export default function EchartsGeoMapSensors(params: IEchartsGeoMapSensors) {
             disabled: true,
           },
         },
-        {
-          // Worst case coverage of receivers based on their RadioHorizon
-          type: "scatter",
-          coordinateSystem: "geo",
-          geoIndex: 0,
-          symbolSize: 45 * zoom,
-          encode: {
-            // `2` is the dimension index of series.data
-            tooltip: 2,
-            label: 2,
-          },
-          data: [
-            // Longitude, latitude, status as string
-            // Dummy point, input real data and check if active or not
-            [6.914567708276425, 46.83996545054292, "worst case coverage", 100],
-          ],
-          itemStyle: {
-            color: "rgb(0,0,0,0)",
-            borderWidth: 1,
-            borderColor: "#ff0000",
-          },
-          emphasis: {
-            disabled: true,
-          },
-        },
-        {
-          // Best case coverage of receivers based on their RadioHorizon
-          type: "scatter",
-          coordinateSystem: "geo",
-          geoIndex: 0,
-          symbolSize: 90 * zoom,
-          encode: {
-            // `2` is the dimension index of series.data
-            tooltip: 2,
-            label: 2,
-          },
-          data: [
-            // Longitude, latitude, status as string
-            // Dummy point, input real data and check if active or not
-            [6.914567708276425, 46.83996545054292, "best case coverage", 30],
-          ],
-          itemStyle: {
-            color: "rgb(0,0,0,0)",
-            borderWidth: 1,
-            borderColor: "#800080",
-          },
-          emphasis: {
-            disabled: true,
-          },
-        },
+        // {
+        //   // Worst case coverage of receivers based on their RadioHorizon
+        //   type: "scatter",
+        //   coordinateSystem: "geo",
+        //   geoIndex: 0,
+        //   symbolSize: 45 * zoom,
+        //   encode: {
+        //     // `2` is the dimension index of series.data
+        //     tooltip: 2,
+        //     label: 2,
+        //   },
+        //   data: [
+        //     // Longitude, latitude, status as string
+        //     // Dummy point, input real data and check if active or not
+        //     [6.914567708276425, 46.83996545054292, "worst case coverage", 100],
+        //   ],
+        //   itemStyle: {
+        //     color: "rgb(0,0,0,0)",
+        //     borderWidth: 1,
+        //     borderColor: "#ff0000",
+        //   },
+        //   emphasis: {
+        //     disabled: true,
+        //   },
+        // },
+        // {
+        //   // Best case coverage of receivers based on their RadioHorizon
+        //   type: "scatter",
+        //   coordinateSystem: "geo",
+        //   geoIndex: 0,
+        //   symbolSize: 90 * zoom,
+        //   encode: {
+        //     // `2` is the dimension index of series.data
+        //     tooltip: 2,
+        //     label: 2,
+        //   },
+        //   data: [
+        //     // Longitude, latitude, status as string
+        //     // Dummy point, input real data and check if active or not
+        //     [6.914567708276425, 46.83996545054292, "best case coverage", 30],
+        //   ],
+        //   itemStyle: {
+        //     color: "rgb(0,0,0,0)",
+        //     borderWidth: 1,
+        //     borderColor: "#800080",
+        //   },
+        //   emphasis: {
+        //     disabled: true,
+        //   },
+        // },
+        // {
+        //   type: "map",
+        //   map: "Kaiserlautern", // use the registered map
+        //   // Additional layer specifics can be set here
+        //   roam: true,
+
+        // },
       ],
       tooltip: {},
     };

@@ -15,9 +15,16 @@ import { CanvasRenderer } from "echarts/renderers";
 import { useEffect, useState } from "react";
 import EchartsGeoMapSensors from "../shared/echarts/sensormap";
 import { EchartTimeline } from "../shared/echarts/timeline";
-import { Client, JobCountWithTime, PacketWithTime, Service } from "../shared/service";
+import {
+  Client,
+  FrameStat,
+  JobCountWithTime,
+  PacketWithTime,
+  Service,
+} from "../shared/service";
 import Body from "../shared/tabler/body";
 import Header from "../shared/tabler/header";
+import { EchartPieChart } from "../shared/echarts/piechart";
 
 echarts.use([
   TitleComponent,
@@ -37,6 +44,7 @@ export default function Statistics() {
   const [numberOfJobsOverTime, setNumberOfJobsOverTime] = useState<
     JobCountWithTime[]
   >([]);
+  const [numberOfPackets, setNumberOfPackets] = useState<FrameStat[]>([]);
 
   // Map with sensors
   useEffect(() => {
@@ -48,6 +56,12 @@ export default function Statistics() {
     });
     Service.getNumberOfJobsOverTime().then((response) => {
       setNumberOfJobsOverTime(response);
+    });
+    Service.getNumberOfJobsOverTime().then((response) => {
+      setNumberOfJobsOverTime(response);
+    });
+    Service.getNumberOfPackets().then((response) => {
+      setNumberOfPackets(response);
     });
   }, []);
 
@@ -67,15 +81,32 @@ export default function Statistics() {
             <div className="col-6">
               <Card2 title="Packets over time">
                 <EchartTimeline
-                  data={networkPacketsOverTime.map((item) => [item.year_month, item.count])}
+                  data={networkPacketsOverTime.map((item) => [
+                    item.year_month,
+                    item.count,
+                  ])}
                 ></EchartTimeline>
               </Card2>
             </div>
             <div className="col-6">
               <Card2 title="Jobs over time">
                 <EchartTimeline
-                  data={numberOfJobsOverTime.map((item) => [`${item.year}-${item.month}`, item.unique_job_count])}
+                  data={numberOfJobsOverTime.map((item) => [
+                    `${item.year}-${item.month}`,
+                    item.unique_job_count,
+                  ])}
                 ></EchartTimeline>
+              </Card2>
+            </div>
+          </div>
+          <div className="row mt-3">
+            <div className="col-6">
+              <Card2 title="Frame types">
+                <EchartPieChart
+                  data={numberOfPackets.map((item) => {
+                    return { name: item.frame_type, value: item.count };
+                  })}
+                ></EchartPieChart>
               </Card2>
             </div>
           </div>
