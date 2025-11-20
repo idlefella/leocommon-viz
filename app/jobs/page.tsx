@@ -1,12 +1,12 @@
 "use client";
 
-import { IconLinkPlus } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import * as echarts from "echarts/core";
 import { useEffect, useState } from "react";
 import Service from "../shared/service";
 
-import { BarChart, PieChart, LineChart } from "echarts/charts";
+import { BarChart, LineChart, PieChart } from "echarts/charts";
 
 import {
   GridComponent,
@@ -16,7 +16,7 @@ import {
 } from "echarts/components";
 
 import { CanvasRenderer } from "echarts/renderers";
-import { createHistogram, aggregateData } from "../shared/utils";
+import { aggregateData, createHistogram } from "../shared/utils";
 
 echarts.use([
   TitleComponent,
@@ -53,7 +53,7 @@ export default function Job() {
     setSnrDistributionData(null);
     setPacketsOverTimeData(null);
     setJobData(null);
-    setSnrOverTimeData(null)
+    setSnrOverTimeData(null);
     if (job) {
       Service.getDfInfo(job).then((response) => {
         setJobData(response);
@@ -79,8 +79,7 @@ export default function Job() {
         updateFrameTypePieChart(data);
         updateFrameTypeBarChart(data);
         updatePacketsOverTimeData(response);
-        updateSnrOverTimeChart(response)
-        
+        updateSnrOverTimeChart(response);
 
         const snrDistribution = createHistogram(
           response.map((data) => data.snr),
@@ -154,8 +153,7 @@ export default function Job() {
   };
 
   const updateSnrOverTimeChart = (data) => {
-
-    const aggregatedData = aggregateData(data, 60)
+    const aggregatedData = aggregateData(data, 60);
 
     setSnrOverTimeData({
       tooltip: {
@@ -174,22 +172,31 @@ export default function Job() {
       series: [
         {
           name: "min",
-          data: aggregatedData.map(element => [element.time, element.snr_min]),
+          data: aggregatedData.map((element) => [
+            element.time,
+            element.snr_min,
+          ]),
           type: "line",
         },
         {
           name: "avg",
-          data: aggregatedData.map(element => [element.time, element.snr_avg]),
+          data: aggregatedData.map((element) => [
+            element.time,
+            element.snr_avg,
+          ]),
           type: "line",
         },
         {
           name: "max",
-          data: aggregatedData.map(element => [element.time, element.snr_max]),
+          data: aggregatedData.map((element) => [
+            element.time,
+            element.snr_max,
+          ]),
           type: "line",
         },
       ],
-    })
-  }
+    });
+  };
 
   const updatePacketsOverTimeData = (data) => {
     // Convert to Date objects and round to the nearest minute
@@ -261,7 +268,7 @@ export default function Job() {
                   data-bs-toggle="modal"
                   data-bs-target="#modal-report"
                 >
-                  <IconLinkPlus />
+                  <IconPlus />
                   Create new measurement
                 </a>
                 <a
