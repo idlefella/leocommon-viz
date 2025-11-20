@@ -106,6 +106,7 @@ export const Service = {
       return response.json();
     });
   },
+<<<<<<< Updated upstream
   getClients: () => {
     return fetch(`${BASE_URL}/clients`).then((response) => {
       return response.json() as Promise<Client[]>;
@@ -119,6 +120,26 @@ export const Service = {
   getNumberOfJobsOverTime: () => {
     return fetch(`${BASE_URL}/network_stats_number_of_jobs_per_month`).then((response) => {
       return response.json() as Promise<JobCountWithTime[]>;
+=======
+  getClients: (dataset: string) => {
+    return fetch(`${BASE_URL}/clients`).then((response) => {
+      return response.json();
+    });
+  },
+  getNumberOfJobsPerMonth: (dataset:string) => {
+    return fetch(`${BASE_URL}/network_stats_number_of_jobs_per_month`).then((response) => {
+      return response.json();
+    });
+  },
+  getPacketsOverTime: (dataset:string) => {
+    return fetch(`${BASE_URL}/network_stats_packets_over_time`).then((response) => {
+      return response.json();
+    });
+  },
+  getNumberOfPackets: (dataset:string) => {
+    return fetch(`${BASE_URL}/network_stats_number_of_packets`).then((response) => {
+      return response.json();
+>>>>>>> Stashed changes
     });
   },
 };
