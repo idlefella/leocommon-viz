@@ -3,7 +3,7 @@
 import { IconPlus } from "@tabler/icons-react";
 import * as echarts from "echarts/core";
 import { useEffect, useState } from "react";
-import Service from "../shared/service";
+import { Service } from "../shared/service";
 
 import { BarChart, LineChart, PieChart } from "echarts/charts";
 

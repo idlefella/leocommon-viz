@@ -38,7 +38,33 @@ const assignColor = (satelliteId: string) => {
   }
 };
 
-export default {
+export interface Client {
+  sensor_name: string
+  jobs: any[]
+  status_status_time: number
+  status_location_lat: number
+  status_location_lon: number
+  status_os_version: string
+  status_temperature_celsius: number
+  status_LTE: string
+  status_WiFi: string
+  status_Ethernet: string
+}
+
+export interface PacketWithTime {
+  year: number,
+  month: number,
+  count: number,
+  year_month: string
+}
+
+export interface JobCountWithTime {
+  year: number,
+  month: number,
+  unique_job_count: number,
+}
+
+export const Service = {
   getTLEs: (system: string) => {
     const params = new URLSearchParams();
     if (system != "all") {
@@ -78,6 +104,21 @@ export default {
   getIridiumIra: (dataset: string) => {
     return fetch(`${BASE_URL}/iridium_ira`).then((response) => {
       return response.json();
+    });
+  },
+  getClients: () => {
+    return fetch(`${BASE_URL}/clients`).then((response) => {
+      return response.json() as Promise<Client[]>;
+    });
+  },
+  getNetworkPacketsOverTime: () => {
+    return fetch(`${BASE_URL}/network_stats_packets_over_time`).then((response) => {
+      return response.json() as Promise<PacketWithTime[]>;
+    });
+  },
+  getNumberOfJobsOverTime: () => {
+    return fetch(`${BASE_URL}/network_stats_number_of_jobs_per_month`).then((response) => {
+      return response.json() as Promise<JobCountWithTime[]>;
     });
   },
 };

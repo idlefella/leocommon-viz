@@ -136,8 +136,13 @@ const Visualization = props => {
         handlers.mousedown = () => { dragging = true }
         handlers.mouseup = () => { dragging = false }
         handlers.mousemove = e => {
-            cursorPosRef.current.x = e.clientX * window.devicePixelRatio
-            cursorPosRef.current.y = e.clientY * window.devicePixelRatio
+            const canvas = canvRef.current
+            const rect = canvas.getBoundingClientRect()
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            cursorPosRef.current.x = (e.clientX - rect.left) * scaleX;
+            cursorPosRef.current.y = (e.clientY - rect.top) * scaleY;
             if (dragging) {
                 modelMatRef.current = mouseRotate(modelMatRef.current, e.movementX, e.movementY, 0.004, Math.PI / 2)
             }

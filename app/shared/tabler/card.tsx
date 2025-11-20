@@ -1,4 +1,3 @@
-import { IconArrowUp } from "@tabler/icons-react";
 
 export default function Card({ subheader, content, icon, children }) {
   return (
@@ -23,7 +22,7 @@ export function Card2({ title, children }) {
     <div className="card">
       {title && (
         <div className="card-header">
-          <h3 className="card-titel">{title}</h3>
+          <h3 className="card-title">{title}</h3>
         </div>
       )}
       <div className="card-body">{children}</div>

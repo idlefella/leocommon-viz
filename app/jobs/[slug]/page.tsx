@@ -4,7 +4,7 @@ import { IconLinkPlus } from "@tabler/icons-react";
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import * as echarts from "echarts/core";
 import { useEffect, useState } from "react";
-import Service from "../../shared/service";
+import { Service } from "../../shared/service";
 import { aggregateData, createHistogram } from "../../shared/utils";
 
 import { BarChart, LineChart, PieChart } from "echarts/charts";

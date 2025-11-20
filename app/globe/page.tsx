@@ -3,10 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Visualization from "../satellite-viz/components/visualization";
 
-import { newEpoch } from "../satellite-viz/lib/shared-epoch.js";
+import {
+  getEpochDisplay,
+  newEpoch,
+} from "../satellite-viz/lib/shared-epoch.js";
 
-import Service from "../shared/service";
+import { Service } from "../shared/service";
 import { Card2 } from "../shared/tabler/card";
+import Progress from "../shared/tabler/progress";
 
 export default function Globe() {
   const [satData, setSatData] = useState([]);
@@ -31,6 +35,19 @@ export default function Globe() {
   };
 
   loadData();
+
+  // Update timer every second
+  const intervalIdRef = useRef();
+  const [epochText, setEpochText] = useState();
+  const displayEpoch = () => {
+    setEpochText(getEpochDisplay(epoch.current));
+  };
+
+  // update epoch text on interval
+  useEffect(() => {
+    intervalIdRef.current = setInterval(displayEpoch, 1000);
+    return () => clearInterval(intervalIdRef.current);
+  }, []);
 
   return (
     <div className="page-wrapper" style={{ position: "absolute" }}>
@@ -68,10 +85,12 @@ export default function Globe() {
             </div>
           </div>
           <div className="row mt-3">
-            <div className="col">
+            <div className="col-6">
               <div className="card">
-                <div className="card-body">
+                <div className="card-header">
                   <h3 className="card-title">Legend</h3>
+                </div>
+                <div className="card-body">
                   <div className="badges-list">
                     <span className="badge bg-red text-red-fg">Iridum</span>
                     <span className="badge bg-blue text-blue-fg">Starlink</span>
@@ -86,6 +105,12 @@ export default function Globe() {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="col-3">
+              <Card2 title="Time">{epochText}</Card2>
+            </div>
+            <div className="col-3">
+              <Card2 title="Speedup">30x</Card2>
             </div>
           </div>
           <div className="row mt-3">
