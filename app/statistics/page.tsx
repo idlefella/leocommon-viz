@@ -14,7 +14,7 @@ import {
 import { CanvasRenderer } from "echarts/renderers";
 import { useEffect, useState } from "react";
 import { EchartPieChart } from "../shared/echarts/piechart";
-import EchartsGeoMapSensors from "../shared/echarts/sensormap";
+import EchartsGeoMapSensors, { Satellite } from "../shared/echarts/sensormap";
 import { EchartTimeline } from "../shared/echarts/timeline";
 import {
   Client,
@@ -26,6 +26,9 @@ import {
 } from "../shared/service";
 import Body from "../shared/tabler/body";
 import Header from "../shared/tabler/header";
+
+import * as satellitejs from "satellite.js";
+import { time } from "console";
 
 echarts.use([
   TitleComponent,
@@ -46,7 +49,27 @@ export default function Statistics() {
     JobCountWithTime[]
   >([]);
   const [numberOfPackets, setNumberOfPackets] = useState<FrameStat[]>([]);
-  const [coverageMaps, setCoverageMaps] = useState<FeatureCollection | null>(null);
+  const [coverageMaps, setCoverageMaps] = useState<FeatureCollection | null>(
+    null
+  );
+  const [tles, setTles] = useState<any[]>([]);
+  const [satellites, setSatellites] = useState<Satellite[]>([]);
+
+  let timerId: any = null;
+
+  const convertSatToLatLong = (sat: any) => {
+    const gmst = satellitejs.gstime(new Date());
+    const positionAndVelocity = satellitejs.propagate(sat.satrec, new Date());
+    const lonLat = satellitejs.eciToGeodetic(
+      positionAndVelocity?.position!,
+      gmst
+    );
+    return {
+      name: sat.name,
+      longitude: satellitejs.degreesLong(lonLat.longitude),
+      latitude: satellitejs.degreesLat(lonLat.latitude),
+    };
+  };
 
   // Map with sensors
   useEffect(() => {
@@ -68,7 +91,21 @@ export default function Statistics() {
     Service.getCoverageOfClient().then((response) => {
       setCoverageMaps(response);
     });
+    Service.getTLEs("IRIDIUM").then((response) => {
+      // Parse two lines to satrec
+      setTles(response);
+      setSatellites(response.map(convertSatToLatLong));
+    });
   }, []);
+
+  useEffect(() => {
+    timerId = setInterval(() => {
+      setSatellites(tles.map(convertSatToLatLong));
+    }, 1000);
+    return () => {
+      clearInterval(timerId);
+    };
+  });
 
   return (
     <>
@@ -81,6 +118,7 @@ export default function Statistics() {
                 <EchartsGeoMapSensors
                   clients={clients}
                   coverageMaps={coverageMaps}
+                  satellites={satellites}
                 ></EchartsGeoMapSensors>
               </Card2>
             </div>

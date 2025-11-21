@@ -38,11 +38,20 @@ echarts.use([
 
 echarts.registerMap("world", JSON.stringify(globe));
 
+
+export interface Satellite {
+  name: string
+  longitude: number
+  latitude: number
+}
+
 interface IEchartsGeoMapSensors {
   // A list of clients
   clients: Client[];
   // A list of geojson
   coverageMaps: FeatureCollection | null;
+  // A list of satellites
+  satellites: Satellite[]
 }
 
 export default function EchartsGeoMapSensors(params: IEchartsGeoMapSensors) {
@@ -51,7 +60,7 @@ export default function EchartsGeoMapSensors(params: IEchartsGeoMapSensors) {
 
   useEffect(() => {
     setChartData(sensormap_option(1));
-  }, [params.clients, params.coverageMaps]);
+  }, [params.clients, params.coverageMaps, params.satellites]);
 
   const onEvents = {
     georoam: (params: any) => {
@@ -180,6 +189,34 @@ export default function EchartsGeoMapSensors(params: IEchartsGeoMapSensors) {
         })
       : [];
 
+    const satelliteSeries = params.satellites ? {
+        // Locations of the satellites
+        type: "scatter",
+        coordinateSystem: "geo",
+        geoIndex: 0,
+        symbolSize: 5,
+        progressive: false,
+        encode: {
+          // `2` is the dimension index of series.data
+          tooltip: 2,
+          label: 2,
+        },
+        data: params.satellites.map((item) => [
+          item.longitude,
+          item.latitude,
+          item.name,
+          10,
+        ]),
+        itemStyle: {
+          color: "#08fc009f",
+          borderWidth: 1,
+          borderColor: "#0068069d",
+        },
+        emphasis: {
+          disabled: false,
+        },
+      } : {}
+
     return {
       animation: false,
 
@@ -198,7 +235,7 @@ export default function EchartsGeoMapSensors(params: IEchartsGeoMapSensors) {
           textBorderWidth: 2,
         },
       },
-      series: [...sensorLocationSeries, ...coverageSeries],
+      series: [...sensorLocationSeries, ...coverageSeries, satelliteSeries],
       tooltip: {},
     };
   }
