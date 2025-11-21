@@ -191,6 +191,7 @@ export default function EchartsGeoMapSensors(params: IEchartsGeoMapSensors) {
 
     const satelliteSeries = params.satellites ? {
         // Locations of the satellites
+        name: "Iridium (live)",
         type: "scatter",
         coordinateSystem: "geo",
         geoIndex: 0,
@@ -208,12 +209,9 @@ export default function EchartsGeoMapSensors(params: IEchartsGeoMapSensors) {
           10,
         ]),
         itemStyle: {
-          color: "#08fc009f",
+          color: "#006eff9f",
           borderWidth: 1,
           borderColor: "#0068069d",
-        },
-        emphasis: {
-          disabled: false,
         },
       } : {}
 
