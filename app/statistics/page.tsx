@@ -13,10 +13,12 @@ import {
 
 import { CanvasRenderer } from "echarts/renderers";
 import { useEffect, useState } from "react";
+import { EchartPieChart } from "../shared/echarts/piechart";
 import EchartsGeoMapSensors from "../shared/echarts/sensormap";
 import { EchartTimeline } from "../shared/echarts/timeline";
 import {
   Client,
+  FeatureCollection,
   FrameStat,
   JobCountWithTime,
   PacketWithTime,
@@ -24,7 +26,6 @@ import {
 } from "../shared/service";
 import Body from "../shared/tabler/body";
 import Header from "../shared/tabler/header";
-import { EchartPieChart } from "../shared/echarts/piechart";
 
 echarts.use([
   TitleComponent,
@@ -45,6 +46,7 @@ export default function Statistics() {
     JobCountWithTime[]
   >([]);
   const [numberOfPackets, setNumberOfPackets] = useState<FrameStat[]>([]);
+  const [coverageMaps, setCoverageMaps] = useState<FeatureCollection | null>(null);
 
   // Map with sensors
   useEffect(() => {
@@ -63,6 +65,9 @@ export default function Statistics() {
     Service.getNumberOfPackets().then((response) => {
       setNumberOfPackets(response);
     });
+    Service.getCoverageOfClient().then((response) => {
+      setCoverageMaps(response);
+    });
   }, []);
 
   return (
@@ -73,7 +78,10 @@ export default function Statistics() {
           <div className="row">
             <div className="col-12">
               <Card2 title="Sensor map">
-                <EchartsGeoMapSensors clients={clients}></EchartsGeoMapSensors>
+                <EchartsGeoMapSensors
+                  clients={clients}
+                  coverageMaps={coverageMaps}
+                ></EchartsGeoMapSensors>
               </Card2>
             </div>
           </div>

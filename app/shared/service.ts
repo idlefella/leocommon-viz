@@ -69,6 +69,11 @@ export interface FrameStat {
   count: number
 }
 
+export interface FeatureCollection {
+  type: string
+  features: any[]
+}
+
 export const Service = {
   getTLEs: (system: string) => {
     const params = new URLSearchParams();
@@ -137,4 +142,11 @@ export const Service = {
       }
     );
   },
+  getCoverageOfClient: () => {
+    return fetch(`${BASE_URL}/clients_geojson`).then(
+      (response) => {
+        return response.json() as Promise<FeatureCollection>;
+      }
+    );
+  }
 };
