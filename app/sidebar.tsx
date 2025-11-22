@@ -53,7 +53,7 @@ export function Sidebar() {
           </li>
         </ul>
       </div>
-      <img src="/coreb.png" style={{'backgroundColor': "#ffffff", 'marginBottom': '80px', 'marginLeft': '6px'}} />
+      <img src="/coreb-logo.svg" style={{'backgroundColor': "rgb(0,0,0,0)", 'marginBottom': '80px', 'marginLeft': '6px'}} />
     </div>
   );
 }

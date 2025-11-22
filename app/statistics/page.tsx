@@ -14,6 +14,7 @@ import {
 import { CanvasRenderer } from "echarts/renderers";
 import { useEffect, useState } from "react";
 import { EchartPieChart } from "../shared/echarts/piechart";
+import { EchartBarChart } from "../shared/echarts/barchart";
 import EchartsGeoMapSensors, { Satellite } from "../shared/echarts/sensormap";
 import { EchartTimeline } from "../shared/echarts/timeline";
 import {
@@ -153,6 +154,15 @@ export default function Statistics() {
                     return { name: item.frame_type, value: item.count };
                   })}
                 ></EchartPieChart>
+              </Card2>
+            </div>
+            <div className="col-6">
+              <Card2 title="Count of Packets">
+                <EchartBarChart
+                  data={numberOfPackets.map((item) => {
+                    return { name: item.frame_type, value: item.count }
+                  })}
+                ></EchartBarChart>
               </Card2>
             </div>
           </div>
