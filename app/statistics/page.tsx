@@ -30,6 +30,7 @@ import Header from "../shared/tabler/header";
 
 import * as satellitejs from "satellite.js";
 import { time } from "console";
+import { EchartHeatmapChart } from "../shared/echarts/heatmap";
 
 echarts.use([
   TitleComponent,
@@ -160,9 +161,20 @@ export default function Statistics() {
               <Card2 title="Count of Packets">
                 <EchartBarChart
                   data={numberOfPackets.map((item) => {
-                    return { name: item.frame_type, value: item.count }
+                    return { name: item.frame_type, value: item.count };
                   })}
                 ></EchartBarChart>
+              </Card2>
+            </div>
+          </div>
+          <div className="row nt-3">
+            <div className="col-6">
+              <Card2 title="Number of previous Jobs">
+                <EchartHeatmapChart
+                  data={numberOfJobsOverTime.map((item) => {
+                    return { month: item.month, year: item.year, value: item.unique_job_count };
+                  })}
+                ></EchartHeatmapChart>
               </Card2>
             </div>
           </div>
